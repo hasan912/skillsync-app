@@ -19,7 +19,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "SkillSync - Course Progress Tracker",
   description: "Track your learning progress with SkillSync",
-  generator: "v0.app",
+  generator: "Muhammad Hasan Baig",
 }
 
 export default function RootLayout({
