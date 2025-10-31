@@ -4,7 +4,7 @@ import { useAuth } from "@/lib/auth-context"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { db } from "@/lib/firebase"
-import { collection, getDocs, doc, getDoc } from "firebase/firestore"
+import { collection, getDocs, doc, getDoc, updateDoc } from "firebase/firestore"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import CourseCard from "@/components/course-card"
@@ -94,18 +94,56 @@ export default function Dashboard() {
       const enrollmentsSnapshot = await getDocs(enrollmentsRef)
 
       const courses: Course[] = []
-      for (const doc of enrollmentsSnapshot.docs) {
-        const enrollment = doc.data()
-        courses.push({
-          id: enrollment.courseId,
-          title: enrollment.courseTitle,
-          description: enrollment.courseDescription,
-          instructor: enrollment.instructor,
-          totalLessons: enrollment.totalLessons,
-          completedLessons: enrollment.completedLessons || 0,
-          completionDate: enrollment.courseCompletedAt?.toDate(),
-          isCompleted: enrollment.isCompleted || false,
-        })
+      for (const enrollmentDoc of enrollmentsSnapshot.docs) {
+        const enrollment = enrollmentDoc.data()
+        
+        // Fetch the latest course data from the main courses collection
+        const courseRef = doc(db, "courses", enrollment.courseId)
+        const courseSnap = await getDoc(courseRef)
+        
+        if (courseSnap.exists()) {
+          const courseData = courseSnap.data()
+          
+          // Check if course data has changed and update enrollment if needed
+          if (
+            courseData.title !== enrollment.courseTitle ||
+            courseData.description !== enrollment.courseDescription ||
+            courseData.instructor !== enrollment.instructor ||
+            courseData.totalLessons !== enrollment.totalLessons
+          ) {
+            // Update the enrollment with latest course data
+            const enrollmentRef = doc(db, "users", user!.uid, "enrollments", enrollment.courseId)
+            await updateDoc(enrollmentRef, {
+              courseTitle: courseData.title,
+              courseDescription: courseData.description,
+              instructor: courseData.instructor,
+              totalLessons: courseData.totalLessons,
+            })
+          }
+          
+          courses.push({
+            id: enrollment.courseId,
+            title: courseData.title,
+            description: courseData.description,
+            instructor: courseData.instructor,
+            totalLessons: courseData.totalLessons,
+            completedLessons: enrollment.completedLessons || 0,
+            completionDate: enrollment.courseCompletedAt?.toDate(),
+            isCompleted: enrollment.isCompleted || false,
+          })
+        } else {
+          // Course doesn't exist anymore, use enrollment data
+          courses.push({
+            id: enrollment.courseId,
+            title: enrollment.courseTitle,
+            description: enrollment.courseDescription,
+            instructor: enrollment.instructor,
+            totalLessons: enrollment.totalLessons,
+            completedLessons: enrollment.completedLessons || 0,
+            completionDate: enrollment.courseCompletedAt?.toDate(),
+            isCompleted: enrollment.isCompleted || false,
+          })
+        }
       }
 
       setEnrolledCourses(courses)
@@ -226,7 +264,15 @@ export default function Dashboard() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {enrolledCourses.map((course) => (
-              <CourseCard key={course.id} course={course} />
+              <CourseCard 
+                key={course.id} 
+                course={course} 
+                onUnenroll={() => {
+                  // Refresh the courses list after unenrolling
+                  setCourseLoading(true)
+                  fetchEnrolledCourses()
+                }}
+              />
             ))}
           </div>
         )}
