@@ -13,6 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Plus, Pencil, Trash2, Book, BookOpen } from "lucide-react"
 import { LoaderOne } from "@/components/ui/loader"
 import Footer from "@/components/Footer"
+import Navbar from "@/components/Navbar"
 
 interface Course {
   id: string
@@ -276,22 +277,7 @@ export default function CreateCoursePage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <nav className="bg-card border-b border-border sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <Link href="/dashboard" className="text-2xl font-bold text-primary flex items-center gap-2">
-            <Book className="w-8 h-8" />
-            SkillSync Admin
-          </Link>
-          <div className="flex gap-4">
-            <Link href="/dashboard">
-              <Button variant="ghost">Back to Dashboard</Button>
-            </Link>
-            <Link href="/courses">
-              <Button variant="ghost">Browse Courses</Button>
-            </Link>
-          </div>
-        </div>
-      </nav>
+     <Navbar />
 
       <main className="container mx-auto px-4 py-12">
         <div className="flex justify-between items-center mb-8">
@@ -301,7 +287,7 @@ export default function CreateCoursePage() {
           </div>
           <Dialog open={courseDialogOpen} onOpenChange={setCourseDialogOpen}>
             <DialogTrigger asChild>
-              <Button onClick={() => openCourseDialog()}>
+              <Button className="" onClick={() => openCourseDialog()}>
                 <Plus className="w-4 h-4 mr-2" />
                 Create Course
               </Button>
@@ -352,15 +338,15 @@ export default function CreateCoursePage() {
 
         <div className="space-y-8">
           {courses.map((course) => (
-            <div key={course.id} className="bg-card border border-border rounded-lg p-6">
-              <div className="flex justify-between items-start mb-4">
-                <div>
-                  <h3 className="text-2xl font-semibold mb-2">{course.title}</h3>
-                  <p className="text-muted-foreground mb-2">{course.description}</p>
+            <div key={course.id} className="bg-card border border-border rounded-lg p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-4">
+                <div className="flex-1">
+                  <h3 className="text-xl sm:text-2xl font-semibold mb-2">{course.title}</h3>
+                  <p className="text-muted-foreground mb-2 text-sm sm:text-base">{course.description}</p>
                   <p className="text-sm text-muted-foreground">By {course.instructor}</p>
                   <p className="text-sm text-muted-foreground">{course.totalLessons} lessons</p>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2 w-full sm:w-auto">
                   <Button variant="outline" size="sm" onClick={() => openCourseDialog(course)}>
                     <Pencil className="w-4 h-4 mr-2" />
                     Edit

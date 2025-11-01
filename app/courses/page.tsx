@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button"
 import { LoaderOne } from "@/components/ui/loader"
 import { ThemeSwitcher } from "@/components/theme-switcher"
 import Footer from "@/components/Footer"
+import Navbar from "@/components/Navbar"
 
 interface Course {
   id: string
@@ -116,34 +117,14 @@ export default function CoursesPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-cyan-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-pink-900/20">
-      <nav className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg border-b border-purple-200 dark:border-purple-800 sticky top-0 z-50 shadow-lg">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <Link href="/dashboard" className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-            SkillSync
-          </Link>
-          <div className="flex gap-2 items-center">
-            <Link href="/dashboard">
-              <Button variant="ghost" className="hover:bg-purple-100 dark:hover:bg-purple-900/50 hover:text-purple-700 dark:hover:text-purple-300">Dashboard</Button>
-            </Link>
-            {isAdmin && (
-              <Link href="/dashboard/create-course">
-                <Button variant="outline" className="border-pink-500 text-pink-600 hover:bg-pink-100 dark:border-pink-400 dark:text-pink-400 dark:hover:bg-pink-900/50">Manage Courses</Button>
-              </Link>
-            )}
-            <Link href="/dashboard/analytics">
-              <Button variant="ghost" className="hover:bg-cyan-100 dark:hover:bg-cyan-900/50 hover:text-cyan-700 dark:hover:text-cyan-300">Analytics</Button>
-            </Link>
-            <ThemeSwitcher />
-          </div>
-        </div>
-      </nav>
+      <Navbar />
 
-      <main className="container mx-auto px-4 py-12">
-        <div className="mb-12 text-center">
-          <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-purple-600 via-pink-600 to-cyan-600 dark:from-purple-400 dark:via-pink-400 dark:to-cyan-400 bg-clip-text text-transparent">
+      <main className="container mx-auto px-3 sm:px-4 py-6 sm:py-12">
+        <div className="mb-8 sm:mb-12 text-center">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 sm:mb-4 bg-gradient-to-r from-purple-600 via-pink-600 to-cyan-600 dark:from-purple-400 dark:via-pink-400 dark:to-cyan-400 bg-clip-text text-transparent px-2">
             Available Courses
           </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-400">Explore and enroll in courses to start learning 🎓</p>
+          <p className="text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-400 px-2">Explore and enroll in courses to start learning 🎓</p>
         </div>
 
         {courses.length === 0 ? (
@@ -158,7 +139,7 @@ export default function CoursesPage() {
             </Button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {courses.map((course, index) => {
               const gradients = [
                 'from-purple-500 to-purple-600 dark:from-purple-600 dark:to-purple-700',
@@ -175,21 +156,21 @@ export default function CoursesPage() {
                   key={course.id}
                   className="group bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 transform border border-purple-200 dark:border-purple-800"
                 >
-                  <div className={`h-32 bg-gradient-to-br ${gradient} flex items-center justify-center`}>
-                    <div className="text-6xl group-hover:scale-110 transition-transform">
+                  <div className={`h-24 sm:h-32 bg-gradient-to-br ${gradient} flex items-center justify-center`}>
+                    <div className="text-4xl sm:text-6xl group-hover:scale-110 transition-transform">
                       {index % 6 === 0 ? '📚' : index % 6 === 1 ? '💻' : index % 6 === 2 ? '🎨' : index % 6 === 3 ? '🔬' : index % 6 === 4 ? '🎵' : '🌟'}
                     </div>
                   </div>
-                  <div className="p-6">
-                    <h3 className="text-xl font-bold mb-2 text-gray-800 dark:text-gray-100">{course.title}</h3>
-                    <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-2">{course.description}</p>
-                    <div className="flex justify-between items-center mb-4 text-sm">
-                      <span className="text-gray-500 dark:text-gray-400">👨‍🏫 {course.instructor}</span>
-                      <span className="font-semibold text-purple-600 dark:text-purple-400">📖 {course.totalLessons} lessons</span>
+                  <div className="p-4 sm:p-6">
+                    <h3 className="text-lg sm:text-xl font-bold mb-2 text-gray-800 dark:text-gray-100">{course.title}</h3>
+                    <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm mb-3 sm:mb-4 line-clamp-2">{course.description}</p>
+                    <div className="flex justify-between items-center mb-3 sm:mb-4 text-xs sm:text-sm">
+                      <span className="text-gray-500 dark:text-gray-400 truncate mr-2">👨‍🏫 {course.instructor}</span>
+                      <span className="font-semibold text-purple-600 dark:text-purple-400 whitespace-nowrap">📖 {course.totalLessons} lessons</span>
                     </div>
                     {course.isCompleted ? (
                       <div className="space-y-2">
-                        <div className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-lg rounded-xl font-semibold py-3 text-center">
+                        <div className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-lg rounded-xl font-semibold py-2.5 sm:py-3 text-sm sm:text-base text-center">
                           ✓ Completed
                         </div>
                         {course.completionDate && (
@@ -198,11 +179,19 @@ export default function CoursesPage() {
                           </p>
                         )}
                       </div>
+                    ) : course.enrolled ? (
+                      <Link href={`/courses/${course.id}`}>
+                        <Button
+                          className="w-full py-2.5 sm:py-3 text-sm sm:text-base bg-blue-500 hover:bg-blue-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 rounded-xl font-semibold"
+                        >
+                          Continue Learning
+                        </Button>
+                      </Link>
                     ) : (
                       <Button
                         onClick={() => handleEnroll(course.id, course)}
                         disabled={enrolling === course.id || course.enrolled}
-                        className={`w-full ${
+                        className={`w-full py-2.5 sm:py-3 text-sm sm:text-base ${
                           course.enrolled 
                             ? 'bg-blue-500 hover:bg-blue-600' 
                             : `bg-gradient-to-r ${gradient} hover:opacity-90`
